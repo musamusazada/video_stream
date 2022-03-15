@@ -8,34 +8,51 @@
   </head>
   <body>
     <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam;">
-      <a-camera rotation-reader></a-camera>
+      <a-camera>
+        <a-entity
+          cursor="fuse: false;rayOrigin:mouse;"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02;
+          radiusOuter: 0.03"
+          material="color: black; shader: flat"
+        ></a-entity>
+      </a-camera>
       <a-box
-        id="box"
+        id="box-red"
+        class="rune"
         position="-1 0.5 -3"
         material="color: red"
         scale=".5 .5 .5 "
+        cursor-listener
+      ></a-box>
+      <a-box
+        id="box-yellow"
+        class="rune"
+        position="-10 0.5 -200"
+        material="color: yellow"
+        scale="15 15 1 "
+        cursor-listener
+      ></a-box>
+      <a-box
+        id="box-blue"
+        class="rune"
+        position="-100 10.5 -400"
+        material="color: blue"
+        scale="15 15 1 "
+        cursor-listener
       ></a-box>
     </a-scene>
 
     <script>
-      const box = document.querySelector("#box");
-      const userLocation = {
-        long: "",
-        lat: "",
-      };
+      const boxes = document.querySelectorAll(".rune");
+      console.log(boxes);
       window.onload = () => {
-        locationSetter(userLocation);
-        // let locationSTR = `latitude: ${userLocation.lat}; longitude: ${userLocation.long}`;
-        // box.setAttribute("gps-entity-place", locationSTR);
-        // console.log(box.getAttribute("gps-entity-place"));
-      };
-
-      function locationSetter(obj) {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          obj.long = pos.coords.longitude;
-          obj.lat = pos.coords.latitude;
+        boxes.forEach((element) => {
+          element.addEventListener("click", (e) => {
+            alert(e.target.getAttribute("id"));
+          });
         });
-      }
+      };
     </script>
   </body>
 </html>
