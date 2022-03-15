@@ -33,8 +33,8 @@
 
       function locationSetter(obj) {
         navigator.geolocation.getCurrentPosition(function (pos) {
-          obj.lang = pos.coords.longitude;
-          obj.lang = pos.coords.latitude;
+          obj.long = pos.coords.longitude;
+          obj.lat = pos.coords.latitude;
         });
       }
     </script>
