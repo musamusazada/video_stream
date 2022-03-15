@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live stream video</title>
+  </head>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    #videoEl {
+      min-width: 200px;
+      height: 400px;
+      max-width: 600px;
+      border: 1px solid red;
+    }
+  </style>
+  <body>
+    <video autoplay="true" id="videoEl"></video>
+
+    <script>
+      const video = document.getElementById("videoEl");
+      navigator.getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+
+      if (navigator.mediaDevices.getUserMedia) {
+        alert("here");
+
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+          })
+          .catch(function (error) {
+            alert("something went wrong");
+          });
+      } else {
+        alert("getUser media is not supported");
+      }
+    </script>
+  </body>
+</html>
