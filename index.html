@@ -10,8 +10,9 @@
     <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam;">
       <a-camera>
         <a-entity
-          cursor="fuse: false;rayOrigin:mouse;"
+          cursor="fuse: false; rayOrigin:mouse;"
           position="0 0 -1"
+          raycaster="objects:a-box"
           geometry="primitive: ring; radiusInner: 0.02;
           radiusOuter: 0.03"
           material="color: black; shader: flat"
@@ -22,21 +23,21 @@
         class="rune"
         position="-1 0.5 -3"
         material="color: red"
-        scale=".5 .5 .5 "
+        scale="1 1 .5"
       ></a-box>
       <a-box
         id="box-yellow"
         class="rune"
-        position="-800 0.5 -300"
+        position="-50 0.5 -3"
         material="color: yellow"
         scale=".5 .5 .5 "
       ></a-box>
       <a-box
         id="box-blue"
         class="rune"
-        position="-500 1.5 -400"
+        position="-50 0.5 -3"
         material="color: blue"
-        scale=".5 .5 .5 "
+        scale="0.1 0.2 .5 "
       ></a-box>
     </a-scene>
 
