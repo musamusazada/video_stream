@@ -15,11 +15,13 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      width: 100vw;
     }
     #videoEl {
       width: 100%;
       height: 100%;
       border: 1px solid red;
+      z-index: -1;
     }
     .circle {
       width: 60px;
@@ -30,6 +32,10 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
+      z-index: 333;
+    }
+    .circle:hover {
+      background: blue;
     }
   </style>
   <body>
@@ -39,30 +45,29 @@
     <script>
       const video = document.getElementById("videoEl");
       const circle = document.querySelector(".circle");
-
-      circle.addEventListener("click", function () {
+      circle.addEventListener("click", () => {
         alert("circle here !");
       });
 
-      navigator.getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
+      // navigator.getUserMedia =
+      //   navigator.getUserMedia ||
+      //   navigator.webkitGetUserMedia ||
+      //   navigator.mozGetUserMedia;
 
-      if (navigator.mediaDevices.getUserMedia) {
-        alert("here");
+      // if (navigator.mediaDevices.getUserMedia) {
+      //   alert("here");
 
-        navigator.mediaDevices
-          .getUserMedia({ video: { facingMode: { exact: "environment" } } })
-          .then(function (stream) {
-            video.srcObject = stream;
-          })
-          .catch(function (error) {
-            alert("something went wrong");
-          });
-      } else {
-        alert("getUser media is not supported");
-      }
+      //   navigator.mediaDevices
+      //     .getUserMedia({ video: { facingMode: { exact: "environment" } } })
+      //     .then(function (stream) {
+      //       video.srcObject = stream;
+      //     })
+      //     .catch(function (error) {
+      //       alert("something went wrong");
+      //     });
+      // } else {
+      //   alert("getUser media is not supported");
+      // }
     </script>
   </body>
 </html>
