@@ -23,8 +23,18 @@
       max-width: 600px;
       border: 1px solid red;
     }
+    .circle {
+      width: 100px;
+      height: 100px;
+      background: red;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
   </style>
   <body>
+    <div class="circle"></div>
     <video autoplay="true" id="videoEl"></video>
 
     <script>
