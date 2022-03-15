@@ -18,15 +18,15 @@
       padding: 20px;
     }
     #videoEl {
-      min-width: 200px;
-      height: 400px;
-      max-width: 600px;
+      width: 100vw;
+      height: 100vh;
       border: 1px solid red;
     }
     .circle {
-      width: 100px;
-      height: 100px;
+      width: 60px;
+      height: 60px;
       background: red;
+      border-radius: 50%;
       position: absolute;
       left: 50%;
       top: 50%;
@@ -39,25 +39,32 @@
 
     <script>
       const video = document.getElementById("videoEl");
-      navigator.getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
+      const circle = document.getElementsByClassName("circle");
+      window.onload = () => {
+        circle.addEventListener("click", function () {
+          console.log("circle here !");
+        });
 
-      if (navigator.mediaDevices.getUserMedia) {
-        alert("here");
+        navigator.getUserMedia =
+          navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia;
 
-        navigator.mediaDevices
-          .getUserMedia({ video: { facingMode: { exact: "environment" } } })
-          .then(function (stream) {
-            video.srcObject = stream;
-          })
-          .catch(function (error) {
-            alert("something went wrong");
-          });
-      } else {
-        alert("getUser media is not supported");
-      }
+        if (navigator.mediaDevices.getUserMedia) {
+          alert("here");
+
+          navigator.mediaDevices
+            .getUserMedia({ video: { facingMode: { exact: "environment" } } })
+            .then(function (stream) {
+              video.srcObject = stream;
+            })
+            .catch(function (error) {
+              alert("something went wrong");
+            });
+        } else {
+          alert("getUser media is not supported");
+        }
+      };
     </script>
   </body>
 </html>
