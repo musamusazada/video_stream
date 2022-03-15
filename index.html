@@ -12,12 +12,35 @@
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
       renderer="antialias: true; alpha: true"
     >
-      <a-camera gps-projected-camera rotation-reader></a-camera>
+      <a-camera gps-camera rotation-reader></a-camera>
       <a-box
-        gps-projected-entity-place="latitude: 40.389891; longitude: 49.830138"
+        id="box"
+        gps-entity-place="latitude: 40.389891; longitude: 49.830138"
         material="color: red"
         scale="10 10 10"
       ></a-box>
     </a-scene>
+
+    <script>
+      const box = document.querySelector("#box");
+      const userLocation = {
+        long: "",
+        lat: "",
+      };
+      window.onload = () => {
+        locationSetter(userLocation);
+        box.setAttribute(
+          "gps-entity-place",
+          `latitude: ${userLocation.lat}; longitude: ${userLocation.long}`
+        );
+      };
+
+      function locationSetter(obj) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          obj.lang = pos.coords.longitude;
+          obj.lang = pos.coords.latitude;
+        });
+      }
+    </script>
   </body>
 </html>
