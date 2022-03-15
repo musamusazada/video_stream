@@ -49,25 +49,25 @@
         alert("circle here !");
       });
 
-      // navigator.getUserMedia =
-      //   navigator.getUserMedia ||
-      //   navigator.webkitGetUserMedia ||
-      //   navigator.mozGetUserMedia;
+      navigator.getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
 
-      // if (navigator.mediaDevices.getUserMedia) {
-      //   alert("here");
+      if (navigator.mediaDevices.getUserMedia) {
+        alert("here");
 
-      //   navigator.mediaDevices
-      //     .getUserMedia({ video: { facingMode: { exact: "environment" } } })
-      //     .then(function (stream) {
-      //       video.srcObject = stream;
-      //     })
-      //     .catch(function (error) {
-      //       alert("something went wrong");
-      //     });
-      // } else {
-      //   alert("getUser media is not supported");
-      // }
+        navigator.mediaDevices
+          .getUserMedia({ video: { facingMode: { exact: "environment" } } })
+          .then(function (stream) {
+            video.srcObject = stream;
+          })
+          .catch(function (error) {
+            alert("something went wrong");
+          });
+      } else {
+        alert("getUser media is not supported");
+      }
     </script>
   </body>
 </html>
