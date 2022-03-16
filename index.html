@@ -23,10 +23,14 @@
     defaultEnvironmentSkyGradientStrength: 0.5;"
     >
       <a-assets>
-        <img id="groundTex" src="assets/sand.jpg" />
+        <a-asset-item id="burgerModel" src="./assets/burger.glb"></a-asset-item>
         <a-asset-item
-          id="burgerModel"
-          src="./assets//burger.glb"
+          id="panModel"
+          src="./assets/pan_model/scene.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="tpaperModel"
+          src="./assets/toiletPaper_model/glTF/scene.gltf"
         ></a-asset-item>
       </a-assets>
 
@@ -48,17 +52,17 @@
       ></a-entity>
       <a-entity
         id="box-yellow"
-        gltf-model="#burgerModel"
+        gltf-model="#panModel"
         class="rune"
         position="-20 0.5 20"
-        scale="3 3 3"
+        scale="50 30 50"
       ></a-entity>
       <a-entity
         id="box-blue"
-        gltf-model="#burgerModel"
+        gltf-model="#tpaperModel"
         class="rune"
         position="-50 0.5 -20"
-        scale="3 3 3"
+        scale="50 30 50"
       ></a-entity>
     </a-scene>
     <!-- Position Based End -->
