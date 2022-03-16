@@ -8,21 +8,17 @@
   </head>
   <body>
     <!-- Location Based Start  -->
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
-    >
-      <a-camera gps-projected-camera rotation-reader></a-camera>
-      <a-box color="yellow" position="0 30 0" />
-    </a-scene>
+
     <!-- Location Based End  -->
 
     <!-- Position Based Start -->
     <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam;">
       <a-assets>
         <img id="groundTex" src="assets/sand.jpg" />
-        <a-asset-item id="burgerModel" src="assets/burger.glb"></a-asset-item>
+        <a-asset-item
+          id="burgerModel"
+          src="./assets//burger.glb"
+        ></a-asset-item>
       </a-assets>
 
       <a-camera
@@ -39,7 +35,6 @@
         id="box-red"
         class="rune"
         position="-10 4 -20"
-        material="color: red"
         scale="3 3 3"
       ></a-entity>
       <a-entity
@@ -47,7 +42,6 @@
         gltf-model="#burgerModel"
         class="rune"
         position="-20 0.5 20"
-        material="color: yellow"
         scale="3 3 3"
       ></a-entity>
       <a-entity
@@ -55,7 +49,6 @@
         gltf-model="#burgerModel"
         class="rune"
         position="-50 0.5 -20"
-        material="color: blue"
         scale="3 3 3"
       ></a-entity>
     </a-scene>
