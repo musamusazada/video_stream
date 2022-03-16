@@ -7,39 +7,59 @@
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
   </head>
   <body>
+    <!-- Location Based Start  -->
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+    >
+      <a-camera gps-projected-camera rotation-reader></a-camera>
+      <a-box color="yellow" position="0 30 0" />
+    </a-scene>
+    <!-- Location Based End  -->
+
+    <!-- Position Based Start -->
     <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam;">
-      <a-camera>
-        <a-entity
-          cursor="fuse: false; rayOrigin:mouse;"
-          position="0 0 -1"
-          raycaster="objects:a-box"
-          geometry="primitive: ring; radiusInner: 0.02;
-          radiusOuter: 0.03"
-          material="color: black; shader: flat"
-        ></a-entity>
+      <a-assets>
+        <img id="groundTex" src="assets/sand.jpg" />
+        <a-asset-item id="burgerModel" src="assets/burger.glb"></a-asset-item>
+      </a-assets>
+
+      <a-camera
+        cursor="fuse: false; rayOrigin: mouse;"
+        position="0 0 -1"
+        raycaster="objects: .rune"
+        geometry="primitive: ring; radiusInner: 0.02;
+      radiusOuter: 0.03"
+        material="color: black; shader: flat"
+      >
       </a-camera>
-      <a-box
+      <a-entity
+        gltf-model="#burgerModel"
         id="box-red"
         class="rune"
         position="-10 4 -20"
         material="color: red"
         scale="3 3 3"
-      ></a-box>
-      <a-box
+      ></a-entity>
+      <a-entity
         id="box-yellow"
+        gltf-model="#burgerModel"
         class="rune"
         position="-20 0.5 20"
         material="color: yellow"
         scale="3 3 3"
-      ></a-box>
-      <a-box
+      ></a-entity>
+      <a-entity
         id="box-blue"
+        gltf-model="#burgerModel"
         class="rune"
         position="-50 0.5 -20"
         material="color: blue"
         scale="3 3 3"
-      ></a-box>
+      ></a-entity>
     </a-scene>
+    <!-- Position Based End -->
 
     <script>
       const boxes = document.querySelectorAll(".rune");
@@ -47,7 +67,8 @@
       window.onload = () => {
         boxes.forEach((element) => {
           element.addEventListener("click", (e) => {
-            alert(e.target.getAttribute("id"));
+            alert("burgirrr");
+            console.log(e.detail.intersection.point);
           });
         });
       };
