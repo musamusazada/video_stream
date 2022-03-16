@@ -23,7 +23,7 @@
 
       <a-camera
         cursor="fuse: false; rayOrigin: mouse;"
-        position="0 0 -1"
+        position="0 6 0"
         raycaster="objects: .rune"
         geometry="primitive: ring; radiusInner: 0.02;
       radiusOuter: 0.03"
@@ -60,8 +60,12 @@
       window.onload = () => {
         boxes.forEach((element) => {
           element.addEventListener("click", (e) => {
-            alert("burgirrr");
-            console.log(e.detail.intersection.point);
+            element.setAttribute("animation", {
+              property: "scale",
+              to: "0 0 0",
+              easing: "easeOutElastic",
+              dur: 1000,
+            });
           });
         });
       };
