@@ -12,55 +12,6 @@
         overflow: hidden;
       }
     </style>
-    <script>
-      AFRAME.registerComponent("camera-logger", {
-        schema: {
-          timestamp: { type: "int" },
-          seconds: { type: "int" }, // default 0
-        },
-
-        log: function () {
-          var cameraEl = this.el.sceneEl.camera.el;
-          var rotation = cameraEl.getAttribute("rotation");
-          var worldPos = new THREE.Vector3();
-          worldPos.setFromMatrixPosition(cameraEl.object3D.matrixWorld);
-          this.el.setAttribute(
-            "position",
-            `${worldPos.x} ${worldPos.y} ${worldPos.z}`
-          );
-          // console.log(
-          //   "Time: " +
-          //     this.data.seconds +
-          //     "; Camera Position: (" +
-          //     worldPos.x.toFixed(2) +
-          //     ", " +
-          //     worldPos.y.toFixed(2) +
-          //     ", " +
-          //     worldPos.z.toFixed(2) +
-          //     "); Camera Rotation: (" +
-          //     rotation.x.toFixed(2) +
-          //     ", " +
-          //     rotation.y.toFixed(2) +
-          //     ", " +
-          //     rotation.z.toFixed(2) +
-          //     ")"
-          // );
-        },
-
-        play: function () {
-          this.data.timestamp = Date.now();
-          this.log();
-        },
-
-        tick: function () {
-          if (Date.now() - this.data.timestamp > 1000) {
-            this.data.timestamp += 1000;
-            this.data.seconds += 1;
-            this.log();
-          }
-        },
-      });
-    </script>
   </head>
   <body>
     <audio
@@ -88,19 +39,21 @@
           src="./assets/toiletPaper_model/glTF/scene.gltf"
         ></a-asset-item>
       </a-assets> -->
-
-      <a-camera look-controls camera-logger>
-        <a-entity
-          cursor="fuse: false; rayOrigin: mouse;"
-          position="0 0 -1"
-          color="red"
-          raycaster="objects: .rune"
-          geometry="primitive: ring; radiusInner: 0.02;
+      <a-entity movement-controls="fly: true">
+        <a-entity camera position="0 1.6 0" look-controls>
+          <a-entity
+            cursor="fuse: false; rayOrigin: mouse;"
+            position="0 0 -1"
+            color="red"
+            raycaster="objects: .rune"
+            geometry="primitive: ring; radiusInner: 0.02;
 radiusOuter: 0.03"
-          material="color: black; shader: flat"
-        >
+            material="color: black; shader: flat"
+          >
+          </a-entity>
         </a-entity>
-      </a-camera>
+      </a-entity>
+
       <!-- 
       <a-entity
         gltf-model="#burgerModel"
