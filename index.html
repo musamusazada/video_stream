@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
     <style>
       body {
-        height: 100vh;
+        min-height: 100vh;
         width: 100%;
         overflow: hidden;
       }
@@ -27,7 +27,10 @@
     <!-- Location Based End  -->
 
     <!-- Position Based Start -->
-    <a-scene embedded>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; sourceWidth: 1000; sourceHeight: 1000; displayWidth: 1000; displayHeight: 1000; canvasWidth: 1000; canvasHeight: 1000; debugUIEnabled: false;"
+    >
       <!-- <a-assets>
         <a-asset-item id="burgerModel" src="./assets/burger.glb"></a-asset-item>
         <a-asset-item
@@ -40,7 +43,7 @@
         ></a-asset-item>
       </a-assets> -->
 
-      <a-camera>
+      <a-camera fov="104">
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
           position="0 0 -1"
@@ -79,7 +82,7 @@ radiusOuter: 0.03"
 
     <script>
       const scene = document.querySelector("a-scene");
-      const position = { x: 20, y: 0, z: -20 };
+      const position = { x: 20, y: 10, z: -20 };
       let boxes;
       let color = ["red", "green", "yellow", "blue", "black"];
       let scale = { x: 20, y: 20, z: 20 };
@@ -128,13 +131,14 @@ radiusOuter: 0.03"
         newBox.setAttribute("position", position);
         newBox.setAttribute("scale", scale);
         newBox.setAttribute("color", color);
+        console.log(newBox.getAttribute("position"));
         _scene.appendChild(newBox);
       }
 
       function positionRandomizer(_positionObj) {
-        _positionObj.x = generateRandomNum(3000, true);
+        _positionObj.x = generateRandomNum(600, true);
         _positionObj.y = generateRandomNum(300, true);
-        _positionObj.z = generateRandomNum(500, true);
+        _positionObj.z = generateRandomNum(600, true);
       }
       function colorRandomizer(elArray) {
         return elArray[generateRandomNum(elArray.length, false)];
@@ -143,7 +147,7 @@ radiusOuter: 0.03"
       //Helper function to generate random number
       function generateRandomNum(range, sign) {
         if (sign) {
-          return Math.floor(Math.random() * range - range);
+          return Math.floor(Math.random() * (range - range * -1) + -1 * range);
         } else {
           return Math.floor(Math.random() * range);
         }
