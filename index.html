@@ -80,18 +80,31 @@ radiusOuter: 0.03"
     <script>
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
-      let cameraPos;
+      let cameraPos = 10;
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
       let color = ["red", "green", "yellow", "blue", "black"];
       let scale = { x: 30, y: 30, z: 30 };
       const clickSound = document.querySelector("#clickSound");
       window.onload = () => {
-        document.addEventListener("touchend", () => {
-          camera.setAttribute("position", `0 ${cameraPos} -1`);
-          cameraPos += 15;
+        let _interval;
+        function moveCamera() {
+          camera.setAttribute("position", `0 0 ${cameraPos}`);
+          cameraPos -= 15;
+        }
+        function startMove() {
+          _interval = setInterval(moveCamera, 400);
+          console.log("moving");
+        }
+        function endMove() {
+          clearInterval(_interval);
+        }
+        document.addEventListener("touchstart", () => {
+          startMove();
         });
-
+        document.addEventListener("touchend", () => {
+          endMove;
+        });
         //Generating 5 Elements at start
         for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
