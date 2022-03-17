@@ -12,6 +12,55 @@
         overflow: hidden;
       }
     </style>
+    <script>
+      AFRAME.registerComponent("camera-logger", {
+        schema: {
+          timestamp: { type: "int" },
+          seconds: { type: "int" }, // default 0
+        },
+
+        log: function () {
+          var cameraEl = this.el.sceneEl.camera.el;
+          var rotation = cameraEl.getAttribute("rotation");
+          var worldPos = new THREE.Vector3();
+          worldPos.setFromMatrixPosition(cameraEl.object3D.matrixWorld);
+          this.el.setAttribute(
+            "position",
+            `${worldPos.x} ${worldPos.y} ${worldPos.z}`
+          );
+          // console.log(
+          //   "Time: " +
+          //     this.data.seconds +
+          //     "; Camera Position: (" +
+          //     worldPos.x.toFixed(2) +
+          //     ", " +
+          //     worldPos.y.toFixed(2) +
+          //     ", " +
+          //     worldPos.z.toFixed(2) +
+          //     "); Camera Rotation: (" +
+          //     rotation.x.toFixed(2) +
+          //     ", " +
+          //     rotation.y.toFixed(2) +
+          //     ", " +
+          //     rotation.z.toFixed(2) +
+          //     ")"
+          // );
+        },
+
+        play: function () {
+          this.data.timestamp = Date.now();
+          this.log();
+        },
+
+        tick: function () {
+          if (Date.now() - this.data.timestamp > 1000) {
+            this.data.timestamp += 1000;
+            this.data.seconds += 1;
+            this.log();
+          }
+        },
+      });
+    </script>
   </head>
   <body>
     <audio
@@ -40,7 +89,7 @@
         ></a-asset-item>
       </a-assets> -->
 
-      <a-camera look-controls rotation-reader>
+      <a-camera look-controls camera-logger>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
           position="0 0 -1"
@@ -78,18 +127,6 @@ radiusOuter: 0.03"
     <!-- Position Based End -->
 
     <script>
-      AFRAME.registerComponent("rotation-reader", {
-        tick: function () {
-          // `this.el` is the element.
-          // `object3D` is the three.js object.
-
-          // `rotation` is a three.js Euler using radians. `quaternion` also available.
-          console.log(this.el.object3D.rotation);
-
-          // `position` is a three.js Vector3.
-          alert(this.el.object3D.position);
-        },
-      });
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
 
@@ -109,6 +146,14 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
+
+      function logAcl() {
+        let acl = new Accelerometer({ frequency: 60 });
+
+        acl.addEventListener("reading", () => {
+          console.log(acl.x);
+        });
+      }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
