@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
   </head>
   <body>
-    <audio src="./assets/Sounds/theme_song.mp3" volume="0.01" autoplay></audio>
+    <audio id="themeSong" src="./assets/Sounds/theme_song.mp3" autoplay></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
     <!-- Location Based Start  -->
@@ -43,7 +43,7 @@ radiusOuter: 0.03"
         >
         </a-entity>
       </a-camera>
-
+      <!-- 
       <a-entity
         gltf-model="#burgerModel"
         id="box-red"
@@ -64,7 +64,7 @@ radiusOuter: 0.03"
         class="rune"
         position="-50 0.5 -20"
         scale="50 30 50"
-      ></a-entity>
+      ></a-entity> -->
     </a-scene>
     <!-- Position Based End -->
 
@@ -75,7 +75,9 @@ radiusOuter: 0.03"
       let color = "red";
       let scale = "10 10 10";
       const clickSound = document.querySelector("#clickSound");
+      const themeSound = document.querySelector("#themeSong");
       window.onload = () => {
+        themeSound.play();
         for (let i = 0; i < 2; i++) {
           generateElement(scene, position, color, scale);
           position.x *= i + 20;
@@ -90,19 +92,19 @@ radiusOuter: 0.03"
             element.addEventListener("click", (e) => {
               element.setAttribute("animation", {
                 property: "scale",
-                to: "0 0 0",
+                to: "0.1 0.1 0.1",
                 easing: "easeOutElastic",
                 dur: 1000,
               });
               clickSound.play();
-              setTimeout(() => {
-                scene.removeChild(element);
-              }, 1000);
+
+              scene.removeChild(e.target);
+
               position.x = 30;
               position.y = Math.random() * 20 - 20;
               position.z = 30;
               scale = "2 2 2";
-              console.log(position);
+
               generateElement(scene, position, color, scale);
               boxes = document.querySelectorAll(".rune");
               onSpawn();
