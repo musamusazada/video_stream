@@ -7,6 +7,9 @@
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
   </head>
   <body>
+    <audio src="./assets/Sounds/theme_song.mp3" volume="0.01" autoplay></audio>
+    <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
+
     <!-- Location Based Start  -->
 
     <!-- Location Based End  -->
@@ -14,8 +17,7 @@
     <!-- Position Based Start -->
     <a-scene
       xrweb="
-    allowedDevices: any;
-    "
+    allowedDevices: any;"
     >
       <a-assets>
         <a-asset-item id="burgerModel" src="./assets/burger.glb"></a-asset-item>
@@ -29,15 +31,19 @@
         ></a-asset-item>
       </a-assets>
 
-      <a-camera
-        cursor="fuse: false; rayOrigin: mouse;"
-        position="0 6 0"
-        raycaster="objects: .rune"
-        geometry="primitive: ring; radiusInner: 0.02;
-      radiusOuter: 0.03"
-        material="color: black; shader: flat"
-      >
+      <a-camera>
+        <a-entity
+          cursor="fuse: false; rayOrigin: mouse;"
+          position="0 0 -1"
+          color="red"
+          raycaster="objects: .rune"
+          geometry="primitive: ring; radiusInner: 0.02;
+radiusOuter: 0.03"
+          material="color: black; shader: flat"
+        >
+        </a-entity>
       </a-camera>
+
       <a-entity
         gltf-model="#burgerModel"
         id="box-red"
@@ -63,20 +69,56 @@
     <!-- Position Based End -->
 
     <script>
-      const boxes = document.querySelectorAll(".rune");
-      console.log(boxes);
+      const scene = document.querySelector("a-scene");
+      const position = { x: 20, y: 0, z: -20 };
+      let boxes;
+      let color = "red";
+      let scale = "10 10 10";
+      const clickSound = document.querySelector("#clickSound");
       window.onload = () => {
-        boxes.forEach((element) => {
-          element.addEventListener("click", (e) => {
-            element.setAttribute("animation", {
-              property: "scale",
-              to: "0 0 0",
-              easing: "easeOutElastic",
-              dur: 1000,
+        for (let i = 0; i < 2; i++) {
+          generateElement(scene, position, color, scale);
+          position.x *= i + 20;
+          position.y *= i + 20;
+          color = "yellow";
+          scale = "15 15 15";
+        }
+        boxes = document.querySelectorAll(".rune");
+        onSpawn();
+        function onSpawn() {
+          boxes.forEach((element) => {
+            element.addEventListener("click", (e) => {
+              element.setAttribute("animation", {
+                property: "scale",
+                to: "0 0 0",
+                easing: "easeOutElastic",
+                dur: 1000,
+              });
+              clickSound.play();
+              setTimeout(() => {
+                scene.removeChild(element);
+              }, 1000);
+              position.x = 30;
+              position.y = Math.random() * 20 - 20;
+              position.z = 30;
+              scale = "2 2 2";
+              console.log(position);
+              generateElement(scene, position, color, scale);
+              boxes = document.querySelectorAll(".rune");
+              onSpawn();
             });
           });
-        });
+        }
       };
+
+      function generateElement(_scene, position, color, scale) {
+        const newBox = document.createElement("a-box");
+        newBox.setAttribute("class", "rune");
+        newBox.setAttribute("position", position);
+        newBox.setAttribute("scale", scale);
+        newBox.setAttribute("color", color);
+        _scene.appendChild(newBox);
+      }
     </script>
   </body>
 </html>
