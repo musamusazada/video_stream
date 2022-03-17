@@ -5,7 +5,6 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <!-- Look-at component. We don't need this now, but we will later. -->
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src="//cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <style>
       body {
         min-height: 100vh;
@@ -40,24 +39,18 @@
           src="./assets/toiletPaper_model/glTF/scene.gltf"
         ></a-asset-item>
       </a-assets> -->
-      <a-entity movement-controls="fly: true; speed:15; controls: touch">
+      <a-camera>
         <a-entity
-          camera
-          position="0 1.6 0"
-          look-controls="pointerLockEnabled: true"
-        >
-          <a-entity
-            cursor="fuse: false; rayOrigin: mouse;"
-            position="0 0 -1"
-            color="red"
-            raycaster="objects: .rune"
-            geometry="primitive: ring; radiusInner: 0.02;
+          cursor="fuse: false; rayOrigin: mouse;"
+          position="0 0 -1"
+          color="red"
+          raycaster="objects: .rune"
+          geometry="primitive: ring; radiusInner: 0.02;
 radiusOuter: 0.03"
-            material="color: black; shader: flat"
-          >
-          </a-entity>
+          material="color: black; shader: flat"
+        >
         </a-entity>
-      </a-entity>
+      </a-camera>
 
       <!-- 
       <a-entity
@@ -87,13 +80,18 @@ radiusOuter: 0.03"
     <script>
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
-
+      let cameraPos;
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
       let color = ["red", "green", "yellow", "blue", "black"];
       let scale = { x: 30, y: 30, z: 30 };
       const clickSound = document.querySelector("#clickSound");
       window.onload = () => {
+        document.addEventListener("touchend", () => {
+          camera.setAttribute("position", `0 ${cameraPos} -1`);
+          cameraPos += 15;
+        });
+
         //Generating 5 Elements at start
         for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
