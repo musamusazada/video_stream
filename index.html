@@ -40,7 +40,7 @@
         ></a-asset-item>
       </a-assets> -->
 
-      <a-camera>
+      <a-camera look-controls rotation-reader>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
           position="0 0 -1"
@@ -78,7 +78,21 @@ radiusOuter: 0.03"
     <!-- Position Based End -->
 
     <script>
+      AFRAME.registerComponent("rotation-reader", {
+        tick: function () {
+          // `this.el` is the element.
+          // `object3D` is the three.js object.
+
+          // `rotation` is a three.js Euler using radians. `quaternion` also available.
+          console.log(this.el.object3D.rotation);
+
+          // `position` is a three.js Vector3.
+          alert(this.el.object3D.position);
+        },
+      });
       const scene = document.querySelector("a-scene");
+      const camera = document.querySelector("a-camera");
+
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
       let color = ["red", "green", "yellow", "blue", "black"];
@@ -134,7 +148,6 @@ radiusOuter: 0.03"
           loop: true,
           dur: 10000,
         });
-        console.log(newBox.getAttribute("position"));
         _scene.appendChild(newBox);
       }
 
