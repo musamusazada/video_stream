@@ -27,10 +27,7 @@
     <!-- Location Based End  -->
 
     <!-- Position Based Start -->
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; sourceWidth: 1000; sourceHeight: 1000; displayWidth: 1000; displayHeight: 1000; canvasWidth: 1000; canvasHeight: 1000; debugUIEnabled: false;"
-    >
+    <a-scene embedded>
       <!-- <a-assets>
         <a-asset-item id="burgerModel" src="./assets/burger.glb"></a-asset-item>
         <a-asset-item
@@ -89,7 +86,7 @@ radiusOuter: 0.03"
       const clickSound = document.querySelector("#clickSound");
       window.onload = () => {
         //Generating 5 Elements at start
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
           generateElement(scene, position, colorRandomizer(color), scale);
         }
@@ -131,6 +128,12 @@ radiusOuter: 0.03"
         newBox.setAttribute("position", position);
         newBox.setAttribute("scale", scale);
         newBox.setAttribute("color", color);
+        newBox.setAttribute("animation", {
+          property: "rotation",
+          to: "180 360 0",
+          loop: true,
+          dur: 10000,
+        });
         console.log(newBox.getAttribute("position"));
         _scene.appendChild(newBox);
       }
