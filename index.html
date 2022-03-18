@@ -30,7 +30,7 @@
     </style>
   </head>
   <body>
-    <div id="deviceInfo"></div>
+    <!-- <div id="deviceInfo"></div> -->
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -39,7 +39,7 @@
     ></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
-    <a-scene xrweb>
+    <a-scene embedded arjs>
       <a-camera>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
@@ -56,10 +56,11 @@ radiusOuter: 0.03"
 
     <script>
       const camera = document.querySelector("a-camera");
-
+      const deviceWidth = window.innerWidth;
+      const deviceHeight = window.innerHeight;
       const deviceInfo = document.querySelector("#deviceInfo");
       const scene = document.querySelector("a-scene");
-      let cameraPos = 10;
+      let cameraPos = { x: 0, y: 0, z: 0 };
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
       let alpha, gamma, beta;
@@ -68,24 +69,34 @@ radiusOuter: 0.03"
       const clickSound = document.querySelector("#clickSound");
       window.onload = () => {
         let _interval;
-        function moveCamera() {
-          camera.setAttribute("position", `0 0 ${cameraPos}`);
-          if (gamma > 0) {
-            cameraPos += 15;
+        function moveCamera(x, y) {
+          if (x > deviceWidth / 2) {
+            cameraPos.x += 15;
           } else {
-            cameraPos -= 15;
+            cameraPos.x -= 15;
           }
+          if (y > deviceHeight / 2) {
+            cameraPos.z += 15;
+          } else {
+            cameraPos.z -= 15;
+          }
+
+          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
         }
-        function startMove() {
-          _interval = setInterval(moveCamera, 100);
+        function startMove(x, y) {
+          _interval = setInterval(() => {
+            moveCamera(x, y);
+          }, 100);
         }
         function endMove() {
           clearInterval(_interval);
         }
-        document.addEventListener("touchstart", () => {
-          startMove();
+        document.addEventListener("touchstart", (e) => {
+          const clientX = e.touches[0].clientX;
+          const clientY = e.touches[0].clientY;
+          startMove(clientX, clientY);
         });
-        document.addEventListener("touchend", () => {
+        document.addEventListener("touchend", (e) => {
           endMove();
         });
         //Generating 5 Elements at start
@@ -98,19 +109,19 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      if (window.DeviceMotionEvent) {
-        window.addEventListener("devicemotion", function (e) {
-          alpha = e.acceleration;
-          gamma = e.rotationRate;
-          deviceInfo.innerText = ` Acceleration: ${alpha.x.toFixed(
-            2
-          )} ${alpha.y.toFixed(2)} ${alpha.z.toFixed(
-            2
-          )} Rotation Rate: ${gamma.alpha.toFixed(2)} ${gamma.beta.toFixed(
-            2
-          )} ${gamma.gamma.toFixed(2)}`;
-        });
-      }
+      // if (window.DeviceMotionEvent) {
+      //   window.addEventListener("devicemotion", function (e) {
+      //     alpha = e.acceleration;
+      //     gamma = e.rotationRate;
+      //     deviceInfo.innerText = ` Acceleration: ${alpha.x.toFixed(
+      //       2
+      //     )} ${alpha.y.toFixed(2)} ${alpha.z.toFixed(
+      //       2
+      //     )} Rotation Rate: ${gamma.alpha.toFixed(2)} ${gamma.beta.toFixed(
+      //       2
+      //     )} ${gamma.gamma.toFixed(2)}`;
+      //   });
+      // }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
