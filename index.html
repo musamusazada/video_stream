@@ -1,18 +1,36 @@
-<!DOCTYPE html>
-
 <html>
   <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="//cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <title>runeCube</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.1.1/aframe-ar.min.js"
+      integrity="sha512-nAwVtZxAhVDCqw7hx/hHoOOrTfNQ+l4dnw5HvRrzeDE8SB3cW6ztoCUQmpeSCiL0ZGO9OfNMghJubNAQTx2Jzw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <style>
       body {
         min-height: 100vh;
         width: 100%;
         overflow: hidden;
       }
+      #deviceInfo {
+        font-size: 2rem;
+        padding: 20px;
+        background: #fff;
+        color: #000;
+        width: 350px;
+        height: 300px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
     </style>
   </head>
   <body>
+    <!-- <div id="deviceInfo"></div> -->
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -20,58 +38,22 @@
       loop
     ></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
-    <a-scene>
-      <a-box
-        position="-1 0.5 -3"
-        rotation="0 45 0"
-        color="#4CC3D9"
-        shadow
-      ></a-box>
-      <a-sphere
-        position="0 1.25 -5"
-        radius="1.25"
-        color="#EF2D5E"
-        shadow
-      ></a-sphere>
-      <a-cylinder
-        position="1 0.75 -3"
-        radius="0.5"
-        height="1.5"
-        color="#FFC65D"
-        shadow
-      ></a-cylinder>
-      <a-plane
-        position="0 0 -4"
-        rotation="-90 0 0"
-        width="4"
-        height="4"
-        color="#7BC8A4"
-        shadow
-      ></a-plane>
-      <a-box
-        position="10 10 -4"
-        rotation="-90 0 0"
-        width="4"
-        height="4"
-        color="green"
-        shadow
-      >
-      </a-box>
-      <a-entity movement-controls="fly: true">
-        <a-entity camera position="0 1.6 0" look-controls>
-          <a-entity
-            cursor="fuse: false; rayOrigin: mouse;"
-            position="0 0 -1"
-            color="red"
-            raycaster="objects: .rune"
-            geometry="primitive: ring; radiusInner: 0.02;
+
+    <a-scene embedded arjs>
+      <a-camera>
+        <a-entity
+          cursor="fuse: false; rayOrigin: mouse;"
+          position="0 0 -1"
+          color="red"
+          raycaster="objects: .rune"
+          geometry="primitive: ring; radiusInner: 0.02;
 radiusOuter: 0.03"
-            material="color: black; shader: flat"
-          >
-          </a-entity>
+          material="color: black; shader: flat"
+        >
         </a-entity>
-      </a-entity>
+      </a-camera>
     </a-scene>
+
     <script>
       //Location variables START
       const options = {
@@ -98,6 +80,72 @@ radiusOuter: 0.03"
       let _interval;
 
       window.onload = () => {
+        function onStart(pos) {
+          const cords = pos.coords;
+          startingPointLAT = cords.latitude;
+          startingPointLONG = cords.longitude;
+        }
+        function error(err) {
+          console.log(err.message);
+        }
+        navigator.geolocation.getCurrentPosition(onStart, error, options);
+
+        function success(pos) {
+          currentPointLAT = pos.coords.latitude;
+          currentPointLONG = pos.coords.longitude;
+        }
+        setInterval(moveCameraLocation, 400);
+        function moveCameraLocation() {
+          navigator.geolocation.getCurrentPosition(success, error, options);
+          if (
+            currentPointLAT > startingPointLAT &&
+            Math.abs(startingPointLAT - currentPointLAT) > 0.025
+          ) {
+            cameraPos.x += 10;
+          } else {
+            cameraPos.x -= 10;
+          }
+          if (
+            currentPointLONG > startingPointLONG &&
+            Math.abs(startingPointLAT - currentPointLAT) > 0.025
+          ) {
+            cameraPos.z -= 10;
+          } else {
+            cameraPos.x += 10;
+          }
+          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
+        }
+
+        function moveCamera(x, y) {
+          if (x > deviceWidth / 2) {
+            cameraPos.x += 15;
+          } else {
+            cameraPos.x -= 15;
+          }
+          if (y > deviceHeight / 2) {
+            cameraPos.z += 15;
+          } else {
+            cameraPos.z -= 15;
+          }
+
+          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
+        }
+        function startMove(x, y) {
+          _interval = setInterval(() => {
+            moveCamera(x, y);
+          }, 100);
+        }
+        function endMove() {
+          clearInterval(_interval);
+        }
+        document.addEventListener("touchstart", (e) => {
+          const clientX = e.touches[0].clientX;
+          const clientY = e.touches[0].clientY;
+          startMove(clientX, clientY);
+        });
+        document.addEventListener("touchend", (e) => {
+          endMove();
+        });
         //Generating 5 Elements at start
         for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
@@ -108,6 +156,19 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
+      // if (window.DeviceMotionEvent) {
+      //   window.addEventListener("devicemotion", function (e) {
+      //     alpha = e.acceleration;
+      //     gamma = e.rotationRate;
+      //     deviceInfo.innerText = ` Acceleration: ${alpha.x.toFixed(
+      //       2
+      //     )} ${alpha.y.toFixed(2)} ${alpha.z.toFixed(
+      //       2
+      //     )} Rotation Rate: ${gamma.alpha.toFixed(2)} ${gamma.beta.toFixed(
+      //       2
+      //     )} ${gamma.gamma.toFixed(2)}`;
+      //   });
+      // }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
