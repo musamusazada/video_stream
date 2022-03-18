@@ -97,12 +97,18 @@ radiusOuter: 0.03"
         setInterval(moveCameraLocation, 400);
         function moveCameraLocation() {
           navigator.geolocation.getCurrentPosition(success, error, options);
-          if (currentPointLAT > startingPointLAT) {
+          if (
+            currentPointLAT > startingPointLAT &&
+            Math.abs(startingPointLAT - currentPointLAT) > 0.025
+          ) {
             cameraPos.x += 10;
           } else {
             cameraPos.x -= 10;
           }
-          if (currentPointLONG > startingPointLONG) {
+          if (
+            currentPointLONG > startingPointLONG &&
+            Math.abs(startingPointLAT - currentPointLAT) > 0.025
+          ) {
             cameraPos.z -= 10;
           } else {
             cameraPos.x += 10;
