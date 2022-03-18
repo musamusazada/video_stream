@@ -22,23 +22,7 @@
     ></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
-    <!-- Location Based Start  -->
-
-    <!-- Location Based End  -->
-
-    <!-- Position Based Start -->
     <a-scene embedded>
-      <!-- <a-assets>
-        <a-asset-item id="burgerModel" src="./assets/burger.glb"></a-asset-item>
-        <a-asset-item
-          id="panModel"
-          src="./assets/pan_model/scene.gltf"
-        ></a-asset-item>
-        <a-asset-item
-          id="tpaperModel"
-          src="./assets/toiletPaper_model/glTF/scene.gltf"
-        ></a-asset-item>
-      </a-assets> -->
       <a-camera>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
@@ -51,31 +35,7 @@ radiusOuter: 0.03"
         >
         </a-entity>
       </a-camera>
-
-      <!-- 
-      <a-entity
-        gltf-model="#burgerModel"
-        id="box-red"
-        class="rune"
-        position="-10 4 -20"
-        scale="3 3 3"
-      ></a-entity>
-      <a-entity
-        id="box-yellow"
-        gltf-model="#panModel"
-        class="rune"
-        position="-20 0.5 20"
-        scale="50 30 50"
-      ></a-entity>
-      <a-entity
-        id="box-blue"
-        gltf-model="#tpaperModel"
-        class="rune"
-        position="-50 0.5 -20"
-        scale="50 30 50"
-      ></a-entity> -->
     </a-scene>
-    <!-- Position Based End -->
 
     <script>
       const scene = document.querySelector("a-scene");
@@ -94,7 +54,6 @@ radiusOuter: 0.03"
         }
         function startMove() {
           _interval = setInterval(moveCamera, 400);
-          console.log("moving");
         }
         function endMove() {
           clearInterval(_interval);
@@ -115,12 +74,15 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (e) {
+          let alpha = e.alpha;
+          let gamma = e.gamme;
+          let beta = e.beta;
 
-      function logAcl() {
-        let acl = new Accelerometer({ frequency: 60 });
-
-        acl.addEventListener("reading", () => {
-          console.log(acl.x);
+          alert(
+            "Alpha: " + alpha + " " + "Gamma: " + gamma + " " + "Beta: " + beta
+          );
         });
       }
 
