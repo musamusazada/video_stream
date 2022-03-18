@@ -102,9 +102,7 @@ radiusOuter: 0.03"
         window.addEventListener("devicemotion", function (e) {
           alpha = e.acceleration;
           gamma = e.rotationRate;
-          deviceInfo.innerText = ` Acceleration: ${alpha.toFixed(
-            4
-          )} Gamma: ${gamma.toFixed(4)}`;
+          deviceInfo.innerText = ` Acceleration: ${alpha} Gamma: ${gamma}`;
         });
       }
 
