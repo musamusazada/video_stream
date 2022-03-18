@@ -2,12 +2,17 @@
   <head>
     <title>runeCube</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.1.1/aframe-ar.min.js"
       integrity="sha512-nAwVtZxAhVDCqw7hx/hHoOOrTfNQ+l4dnw5HvRrzeDE8SB3cW6ztoCUQmpeSCiL0ZGO9OfNMghJubNAQTx2Jzw=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+      integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+      crossorigin="anonymous"
     ></script>
     <style>
       body {
@@ -40,7 +45,7 @@
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
     <a-scene embedded arjs>
-      <a-camera>
+      <a-camera wasd-controls>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
           position="0 0 -1"
@@ -55,55 +60,30 @@ radiusOuter: 0.03"
     </a-scene>
 
     <script>
-      //Location variables START
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 1000,
-      };
-      let startingPointLAT;
-      let startingPointLONG;
-      let currentPointLAT;
-      let currentPointLONG;
-      //Location variables END
+      // const socket = io("http://d357-62-212-229-2.ngrok.io");
+      const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
       const deviceWidth = window.innerWidth;
       const deviceHeight = window.innerHeight;
-      const deviceInfo = document.querySelector("#deviceInfo");
-      const scene = document.querySelector("a-scene");
+      //Default Camera Position
       let cameraPos = { x: 0, y: 0, z: 0 };
+      //Default Object Position
       const position = { x: 20, y: 10, z: -20 };
+      //For getting dom elements
       let boxes;
-      let alpha, gamma, beta;
-      let color = ["red", "green", "yellow", "blue", "black"];
+      //Colors
+      let color = ["red", "green", "yellow", "blue", "pink"];
+      //Types of entities(shapes)
+      let shapes = ["a-box", "a-cylinder", "a-sphere", "a-torus"];
+      //Default Scale Properties
       let scale = { x: 40, y: 40, z: 40 };
       const clickSound = document.querySelector("#clickSound");
       let _interval;
 
       window.onload = () => {
-        function moveCamera(x, y) {
-          if (x > deviceWidth / 2) {
-            cameraPos.x += 15;
-          } else {
-            cameraPos.x -= 15;
-          }
-          if (y > deviceHeight / 2) {
-            cameraPos.z += 15;
-          } else {
-            cameraPos.z -= 15;
-          }
-          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
-        }
-
-        //Triggers dynamically moving on touch
-        function startMove(x, y) {
-          _interval = setInterval(() => {
-            moveCamera(x, y);
-          }, 100);
-        }
-        //Stops moving when you stop touching on screen
-        function endMove() {
-          clearInterval(_interval);
-        }
+        // socket.on("connect", () => {
+        //   console.log("Connection Establised");
+        // });
         document.addEventListener("touchstart", (e) => {
           const clientX = e.touches[0].clientX;
           const clientY = e.touches[0].clientY;
@@ -115,42 +95,90 @@ radiusOuter: 0.03"
         //Generating 5 Elements at start
         for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
-          generateElement(scene, position, colorRandomizer(color), scale);
+          generateElement(
+            scene,
+            position,
+            arrRandomizer(color),
+            scale,
+            arrRandomizer(shapes)
+          );
         }
-        //Get all elements with rune class
-        boxes = document.querySelectorAll(".rune");
+
         //This method adds click event for all boxes.
         onSpawn();
       };
 
+      //Moving the camera after checking the X and Y touch points
+      function moveCamera(x, y) {
+        if (x > deviceWidth / 2) {
+          cameraPos.x += 15;
+        } else {
+          cameraPos.x -= 15;
+        }
+        if (y > deviceHeight / 2) {
+          cameraPos.z += 15;
+        } else {
+          cameraPos.z -= 15;
+        }
+        camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
+      }
+
+      //Triggers dynamically moving on touch
+      function startMove(x, y) {
+        _interval = setInterval(() => {
+          moveCamera(x, y);
+        }, 100);
+      }
+      //Stops moving when you stop touching on screen
+      function endMove() {
+        clearInterval(_interval);
+      }
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
+        //Get all elements with rune class
+        boxes = document.querySelectorAll(".rune");
         boxes.forEach((element) => {
           element.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // socket.emit("check_rune", {
+            //   value: element.getAttribute("value"),
+            //   color: element.getAttribute("color"),
+            // });
+            console.log("you clicked on: " + element.getAttribute("value"));
             element.setAttribute("animation", {
               property: "scale",
-              to: "0.1 0.1 0.1",
-              easing: "easeOutElastic",
+              to: "0 0 0",
               dur: 1000,
+              easing: "easeOutElastic",
+              loop: false,
             });
             clickSound.play();
+            console.log(e.srcElement);
 
             setTimeout(() => {
-              scene.removeChild(e.target);
+              document.body.removeChild(e.currentTarget);
               //Randomize the Position object
               positionRandomizer(position);
               //Generate new element with different position and color;
-              generateElement(scene, position, colorRandomizer(color), scale);
+              generateElement(
+                scene,
+                position,
+                arrRandomizer(color),
+                scale,
+                arrRandomizer(shapes)
+              );
               boxes = document.querySelectorAll(".rune");
               onSpawn();
-            }, 1000);
+            }, 2000);
           });
         });
       }
 
       //Helper function to generate new element
-      function generateElement(_scene, position, color, scale) {
-        const newBox = document.createElement("a-box");
+      function generateElement(_scene, position, color, scale, entity_type) {
+        const newBox = document.createElement(entity_type);
+        newBox.setAttribute("value", entity_type);
         newBox.setAttribute("class", "rune");
         newBox.setAttribute("position", position);
         newBox.setAttribute("scale", scale);
@@ -164,12 +192,15 @@ radiusOuter: 0.03"
         _scene.appendChild(newBox);
       }
 
+      //Generates random number
       function positionRandomizer(_positionObj) {
         _positionObj.x = generateRandomNum(600, true);
         _positionObj.y = generateRandomNum(300, true);
         _positionObj.z = generateRandomNum(600, true);
       }
-      function colorRandomizer(elArray) {
+
+      //Random element from array
+      function arrRandomizer(elArray) {
         return elArray[generateRandomNum(elArray.length, false)];
       }
 
