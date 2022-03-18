@@ -100,9 +100,9 @@ radiusOuter: 0.03"
       };
       if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", function (e) {
-          let alpha = e.alpha;
-          let gamma = e.gamma;
-          let beta = e.beta;
+          alpha = e.alpha;
+          gamma = e.gamma;
+          beta = e.beta;
           deviceInfo.innerText = `Alpha:  ${alpha.toFixed(
             4
           )}  Gamma: ${gamma.toFixed(4)} Beta: ${beta.toFixed(4)}`;
