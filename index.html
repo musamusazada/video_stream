@@ -4,8 +4,22 @@
   <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="//cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+    <style>
+      body {
+        min-height: 100vh;
+        width: 100%;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
+    <audio
+      id="themeSong"
+      src="./assets/Sounds/theme_song.mp3"
+      autoplay
+      loop
+    ></audio>
+    <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
     <a-scene>
       <a-box
         position="-1 0.5 -3"
@@ -34,11 +48,125 @@
         color="#7BC8A4"
         shadow
       ></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-
+      <a-box
+        position="10 10 -4"
+        rotation="-90 0 0"
+        width="4"
+        height="4"
+        color="green"
+        shadow
+      >
+      </a-box>
       <a-entity movement-controls="fly: true">
-        <a-entity camera position="0 1.6 0" look-controls></a-entity>
+        <a-entity camera position="0 1.6 0" look-controls>
+          <a-entity
+            cursor="fuse: false; rayOrigin: mouse;"
+            position="0 0 -1"
+            color="red"
+            raycaster="objects: .rune"
+            geometry="primitive: ring; radiusInner: 0.02;
+radiusOuter: 0.03"
+            material="color: black; shader: flat"
+          >
+          </a-entity>
+        </a-entity>
       </a-entity>
     </a-scene>
+    <script>
+      //Location variables START
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+      };
+      let startingPointLAT;
+      let startingPointLONG;
+      let currentPointLAT;
+      let currentPointLONG;
+      //Location variables END
+      const camera = document.querySelector("a-camera");
+      const deviceWidth = window.innerWidth;
+      const deviceHeight = window.innerHeight;
+      const deviceInfo = document.querySelector("#deviceInfo");
+      const scene = document.querySelector("a-scene");
+      let cameraPos = { x: 0, y: 0, z: 0 };
+      const position = { x: 20, y: 10, z: -20 };
+      let boxes;
+      let alpha, gamma, beta;
+      let color = ["red", "green", "yellow", "blue", "black"];
+      let scale = { x: 40, y: 40, z: 40 };
+      const clickSound = document.querySelector("#clickSound");
+      let _interval;
+
+      window.onload = () => {
+        //Generating 5 Elements at start
+        for (let i = 0; i < 50; i++) {
+          positionRandomizer(position);
+          generateElement(scene, position, colorRandomizer(color), scale);
+        }
+        //Get all elements with rune class
+        boxes = document.querySelectorAll(".rune");
+        //This method adds click event for all boxes.
+        onSpawn();
+      };
+
+      //On Click we start animation, remove the element from Dom and spawn new one.
+      function onSpawn() {
+        boxes.forEach((element) => {
+          element.addEventListener("click", (e) => {
+            element.setAttribute("animation", {
+              property: "scale",
+              to: "0.1 0.1 0.1",
+              easing: "easeOutElastic",
+              dur: 1000,
+            });
+            clickSound.play();
+
+            setTimeout(() => {
+              scene.removeChild(e.target);
+              //Randomize the Position object
+              positionRandomizer(position);
+              //Generate new element with different position and color;
+              generateElement(scene, position, colorRandomizer(color), scale);
+              boxes = document.querySelectorAll(".rune");
+              onSpawn();
+            }, 1000);
+          });
+        });
+      }
+
+      //Helper function to generate new element
+      function generateElement(_scene, position, color, scale) {
+        const newBox = document.createElement("a-box");
+        newBox.setAttribute("class", "rune");
+        newBox.setAttribute("position", position);
+        newBox.setAttribute("scale", scale);
+        newBox.setAttribute("color", color);
+        newBox.setAttribute("animation", {
+          property: "rotation",
+          to: "180 360 0",
+          loop: true,
+          dur: 10000,
+        });
+        _scene.appendChild(newBox);
+      }
+
+      function positionRandomizer(_positionObj) {
+        _positionObj.x = generateRandomNum(600, true);
+        _positionObj.y = generateRandomNum(300, true);
+        _positionObj.z = generateRandomNum(600, true);
+      }
+      function colorRandomizer(elArray) {
+        return elArray[generateRandomNum(elArray.length, false)];
+      }
+
+      //Helper function to generate random number
+      function generateRandomNum(range, sign) {
+        if (sign) {
+          return Math.floor(Math.random() * (range - range * -1) + -1 * range);
+        } else {
+          return Math.floor(Math.random() * range);
+        }
+      }
+    </script>
   </body>
 </html>
