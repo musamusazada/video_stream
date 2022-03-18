@@ -70,7 +70,7 @@ radiusOuter: 0.03"
         let _interval;
         function moveCamera() {
           camera.setAttribute("position", `0 0 ${cameraPos}`);
-          if (gamma > 60) {
+          if (gamma > 0) {
             cameraPos += 15;
           } else {
             cameraPos -= 15;
