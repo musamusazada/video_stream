@@ -55,6 +55,13 @@ radiusOuter: 0.03"
     </a-scene>
 
     <script>
+      //Location variables START
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 1000,
+      };
+
+      //Location variables END
       const camera = document.querySelector("a-camera");
       const deviceWidth = window.innerWidth;
       const deviceHeight = window.innerHeight;
@@ -67,8 +74,25 @@ radiusOuter: 0.03"
       let color = ["red", "green", "yellow", "blue", "black"];
       let scale = { x: 40, y: 40, z: 40 };
       const clickSound = document.querySelector("#clickSound");
+      let _interval;
+
       window.onload = () => {
-        let _interval;
+        function success(pos) {
+          const cords = pos.coords;
+          alert(
+            "Latitude: " +
+              cords.latitude +
+              " " +
+              "Longitude: " +
+              cords.longitude
+          );
+        }
+        function error(err) {
+          console.log(err.message);
+        }
+        setInterval(() => {
+          navigator.geolocation.getCurrentPosition(success, error, options);
+        }, 4000);
         function moveCamera(x, y) {
           if (x > deviceWidth / 2) {
             cameraPos.x += 15;
