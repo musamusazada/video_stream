@@ -98,12 +98,13 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", function (e) {
-          alpha = e.alpha;
-          gamma = e.gamma;
-          beta = e.beta;
-          deviceInfo.innerText = `  Gamma: ${gamma.toFixed(4)}`;
+      if (window.DeviceMotionEvent) {
+        window.addEventListener("devicemotion", function (e) {
+          alpha = e.acceleration;
+          gamma = e.rotationRate;
+          deviceInfo.innerText = ` Acceleration: ${alpha.toFixed(
+            4
+          )} Gamma: ${gamma.toFixed(4)}`;
         });
       }
 
