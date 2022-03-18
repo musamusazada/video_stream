@@ -30,7 +30,7 @@
     </style>
   </head>
   <body>
-    <div id="deviceInfo"></div>
+    <!-- <div id="deviceInfo"></div> -->
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -62,6 +62,7 @@ radiusOuter: 0.03"
       let cameraPos = 10;
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
+      let alpha, gamma, beta;
       let color = ["red", "green", "yellow", "blue", "black"];
       let scale = { x: 30, y: 30, z: 30 };
       const clickSound = document.querySelector("#clickSound");
@@ -69,10 +70,14 @@ radiusOuter: 0.03"
         let _interval;
         function moveCamera() {
           camera.setAttribute("position", `0 0 ${cameraPos}`);
-          cameraPos -= 15;
+          if (gamma > 60) {
+            cameraPos += 30;
+          } else {
+            cameraPos -= 30;
+          }
         }
         function startMove() {
-          _interval = setInterval(moveCamera, 400);
+          _interval = setInterval(moveCamera, 100);
         }
         function endMove() {
           clearInterval(_interval);
