@@ -1,20 +1,29 @@
 <html>
   <head>
-    <title>AR.js Basic Projected Camera Example</title>
+    <title>runeCube</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-    <!-- Look-at component. We don't need this now, but we will later. -->
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.14/dist/aframe-orbit-controls-component.min.js"></script>
     <style>
       body {
         min-height: 100vh;
         width: 100%;
         overflow: hidden;
       }
+      #deviceInfo {
+        font-size: 2rem;
+        padding: 20px;
+        background: #fff;
+        color: #000;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
     </style>
   </head>
   <body>
+    <div id="deviceInfo"></div>
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -24,19 +33,7 @@
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
     <a-scene embedded>
-      <a-camera
-        camera="fov: 80; zoom: 1;"
-        position="0 2 5"
-        orbit-controls="
-          autoRotate: false;
-          target: a-box;
-          enableDamping: true;
-          dampingFactor: 0.125;
-          rotateSpeed:0.25;
-          minDistance:3;
-          maxDistance:100;
-          "
-      >
+      <a-camera>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
           position="0 0 -1"
@@ -51,6 +48,7 @@ radiusOuter: 0.03"
     </a-scene>
 
     <script>
+      const deviceInfo = document.querySelector("#deviceInfo");
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
       let cameraPos = 10;
@@ -87,17 +85,14 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      // if (window.DeviceOrientationEvent) {
-      //   window.addEventListener("deviceorientation", function (e) {
-      //     let alpha = e.alpha;
-      //     let gamma = e.gamme;
-      //     let beta = e.beta;
-
-      //     alert(
-      //       "Alpha: " + alpha + " " + "Gamma: " + gamma + " " + "Beta: " + beta
-      //     );
-      //   });
-      // }
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (e) {
+          let alpha = e.alpha;
+          let gamma = e.gamme;
+          let beta = e.beta;
+          deviceInfo.innerText = ` "Alpha: " + ${alpha} + " " + "Gamma: " + ${gamma} + " " + "Beta: " + ${beta}`;
+        });
+      }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
