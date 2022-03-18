@@ -2,8 +2,13 @@
   <head>
     <title>runeCube</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/ar.js/2.1.1/aframe-ar.min.js"
+      integrity="sha512-nAwVtZxAhVDCqw7hx/hHoOOrTfNQ+l4dnw5HvRrzeDE8SB3cW6ztoCUQmpeSCiL0ZGO9OfNMghJubNAQTx2Jzw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <style>
       body {
         min-height: 100vh;
@@ -34,7 +39,7 @@
     ></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
-    <a-scene embedded>
+    <a-scene embedded arjs>
       <a-camera>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
@@ -50,9 +55,20 @@ radiusOuter: 0.03"
     </a-scene>
 
     <script>
+      const camera = document.querySelector("a-camera");
+
+      AFRAME.registerComponent("camera-direction", {
+        init: function () {
+          let direction = new THREE.Vector3();
+          setInterval(() => {
+            camera.getWorldDirection(direction);
+            alert(direction);
+          }, 1000);
+        },
+      });
+
       const deviceInfo = document.querySelector("#deviceInfo");
       const scene = document.querySelector("a-scene");
-      const camera = document.querySelector("a-camera");
       let cameraPos = 10;
       const position = { x: 20, y: 10, z: -20 };
       let boxes;
