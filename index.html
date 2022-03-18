@@ -60,7 +60,10 @@ radiusOuter: 0.03"
         enableHighAccuracy: true,
         timeout: 1000,
       };
-
+      let startingPointLAT;
+      let startingPointLONG;
+      let currentPointLAT;
+      let currentPointLONG;
       //Location variables END
       const camera = document.querySelector("a-camera");
       const deviceWidth = window.innerWidth;
@@ -77,22 +80,36 @@ radiusOuter: 0.03"
       let _interval;
 
       window.onload = () => {
-        function success(pos) {
+        function onStart(pos) {
           const cords = pos.coords;
-          alert(
-            "Latitude: " +
-              cords.latitude +
-              " " +
-              "Longitude: " +
-              cords.longitude
-          );
+          startingPointLAT = cords.latitude;
+          startingPointLONG = cords.longitude;
         }
         function error(err) {
           console.log(err.message);
         }
-        setInterval(() => {
+        navigator.geolocation.getCurrentPosition(onStart, error, options);
+
+        function success(pos) {
+          currentPointLAT = pos.coords.latitude;
+          currentPointLONG = pos.coords.longitude;
+        }
+        setInterval(moveCameraLocation, 400);
+        function moveCameraLocation() {
           navigator.geolocation.getCurrentPosition(success, error, options);
-        }, 4000);
+          if (currentPointLAT > startingPointLAT) {
+            cameraPos.x += 40;
+          } else {
+            cameraPos.x -= 40;
+          }
+          if (currentPointLONG > startingPointLONG) {
+            cameraPos.z -= 40;
+          } else {
+            cameraPos.x += 40;
+          }
+          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
+        }
+
         function moveCamera(x, y) {
           if (x > deviceWidth / 2) {
             cameraPos.x += 15;
