@@ -80,42 +80,6 @@ radiusOuter: 0.03"
       let _interval;
 
       window.onload = () => {
-        function onStart(pos) {
-          const cords = pos.coords;
-          startingPointLAT = cords.latitude;
-          startingPointLONG = cords.longitude;
-        }
-        function error(err) {
-          console.log(err.message);
-        }
-        navigator.geolocation.getCurrentPosition(onStart, error, options);
-
-        function success(pos) {
-          currentPointLAT = pos.coords.latitude;
-          currentPointLONG = pos.coords.longitude;
-        }
-        setInterval(moveCameraLocation, 400);
-        function moveCameraLocation() {
-          navigator.geolocation.getCurrentPosition(success, error, options);
-          if (
-            currentPointLAT > startingPointLAT &&
-            Math.abs(startingPointLAT - currentPointLAT) > 0.025
-          ) {
-            cameraPos.x += 10;
-          } else {
-            cameraPos.x -= 10;
-          }
-          if (
-            currentPointLONG > startingPointLONG &&
-            Math.abs(startingPointLAT - currentPointLAT) > 0.025
-          ) {
-            cameraPos.z -= 10;
-          } else {
-            cameraPos.x += 10;
-          }
-          camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
-        }
-
         function moveCamera(x, y) {
           if (x > deviceWidth / 2) {
             cameraPos.x += 15;
@@ -127,14 +91,16 @@ radiusOuter: 0.03"
           } else {
             cameraPos.z -= 15;
           }
-
           camera.setAttribute("position", `${cameraPos.x} 0 ${cameraPos.z}`);
         }
+
+        //Triggers dynamically moving on touch
         function startMove(x, y) {
           _interval = setInterval(() => {
             moveCamera(x, y);
           }, 100);
         }
+        //Stops moving when you stop touching on screen
         function endMove() {
           clearInterval(_interval);
         }
@@ -156,19 +122,6 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      // if (window.DeviceMotionEvent) {
-      //   window.addEventListener("devicemotion", function (e) {
-      //     alpha = e.acceleration;
-      //     gamma = e.rotationRate;
-      //     deviceInfo.innerText = ` Acceleration: ${alpha.x.toFixed(
-      //       2
-      //     )} ${alpha.y.toFixed(2)} ${alpha.z.toFixed(
-      //       2
-      //     )} Rotation Rate: ${gamma.alpha.toFixed(2)} ${gamma.beta.toFixed(
-      //       2
-      //     )} ${gamma.gamma.toFixed(2)}`;
-      //   });
-      // }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
