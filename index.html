@@ -30,7 +30,7 @@
     </style>
   </head>
   <body>
-    <!-- <div id="deviceInfo"></div> -->
+    <div id="deviceInfo"></div>
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -93,16 +93,16 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      // if (window.DeviceOrientationEvent) {
-      //   window.addEventListener("deviceorientation", function (e) {
-      //     let alpha = e.alpha;
-      //     let gamma = e.gamma;
-      //     let beta = e.beta;
-      //     deviceInfo.innerText = `Alpha:  ${alpha.toFixed(
-      //       4
-      //     )}  Gamma: ${gamma.toFixed(4)} Beta: ${beta.toFixed(4)}`;
-      //   });
-      // }
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (e) {
+          let alpha = e.alpha;
+          let gamma = e.gamma;
+          let beta = e.beta;
+          deviceInfo.innerText = `Alpha:  ${alpha.toFixed(
+            4
+          )}  Gamma: ${gamma.toFixed(4)} Beta: ${beta.toFixed(4)}`;
+        });
+      }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
