@@ -30,7 +30,7 @@
     </style>
   </head>
   <body>
-    <div id="deviceInfo"></div>
+    <!-- <div id="deviceInfo"></div> -->
     <audio
       id="themeSong"
       src="./assets/Sounds/theme_song.mp3"
@@ -56,16 +56,6 @@ radiusOuter: 0.03"
 
     <script>
       const camera = document.querySelector("a-camera");
-
-      AFRAME.registerComponent("camera-direction", {
-        init: function () {
-          let direction = new THREE.Vector3();
-          setInterval(() => {
-            camera.getWorldDirection(direction);
-            alert(direction);
-          }, 1000);
-        },
-      });
 
       const deviceInfo = document.querySelector("#deviceInfo");
       const scene = document.querySelector("a-scene");
@@ -103,16 +93,16 @@ radiusOuter: 0.03"
         //This method adds click event for all boxes.
         onSpawn();
       };
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", function (e) {
-          let alpha = e.alpha;
-          let gamma = e.gamma;
-          let beta = e.beta;
-          deviceInfo.innerText = `Alpha:  ${alpha.toFixed(
-            4
-          )}  Gamma: ${gamma.toFixed(4)} Beta: ${beta.toFixed(4)}`;
-        });
-      }
+      // if (window.DeviceOrientationEvent) {
+      //   window.addEventListener("deviceorientation", function (e) {
+      //     let alpha = e.alpha;
+      //     let gamma = e.gamma;
+      //     let beta = e.beta;
+      //     deviceInfo.innerText = `Alpha:  ${alpha.toFixed(
+      //       4
+      //     )}  Gamma: ${gamma.toFixed(4)} Beta: ${beta.toFixed(4)}`;
+      //   });
+      // }
 
       //On Click we start animation, remove the element from Dom and spawn new one.
       function onSpawn() {
