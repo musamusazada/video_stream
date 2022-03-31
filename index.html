@@ -44,7 +44,7 @@
     ></audio>
     <audio id="clickSound" src="./assets/Sounds/click_sound.mp3"></audio>
 
-    <a-scene embedded arjs>
+    <a-scene webxr>
       <a-camera wasd-controls>
         <a-entity
           cursor="fuse: false; rayOrigin: mouse;"
@@ -56,11 +56,12 @@ radiusOuter: 0.03"
           material="color: black; shader: flat"
         >
         </a-entity>
+        <a-box color="red" scale="2 2 2" position=" 1 1 -1"></a-box>
       </a-camera>
     </a-scene>
 
     <script>
-      // const socket = io("http://d357-62-212-229-2.ngrok.io");
+      const socket = io("https://obscure-retreat-97336.herokuapp.com/");
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
       const deviceWidth = window.innerWidth;
@@ -81,9 +82,9 @@ radiusOuter: 0.03"
       let _interval;
 
       window.onload = () => {
-        // socket.on("connect", () => {
-        //   console.log("Connection Establised");
-        // });
+        socket.on("connect", () => {
+          console.log("Connection Establised");
+        });
         document.addEventListener("touchstart", (e) => {
           const clientX = e.touches[0].clientX;
           const clientY = e.touches[0].clientY;
@@ -92,7 +93,7 @@ radiusOuter: 0.03"
         document.addEventListener("touchend", (e) => {
           endMove();
         });
-        //Generating 5 Elements at start
+        //Generating 50 Elements at start
         for (let i = 0; i < 50; i++) {
           positionRandomizer(position);
           generateElement(
@@ -140,11 +141,10 @@ radiusOuter: 0.03"
         boxes.forEach((element) => {
           element.addEventListener("click", (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            // socket.emit("check_rune", {
-            //   value: element.getAttribute("value"),
-            //   color: element.getAttribute("color"),
-            // });
+            socket.emit("check_rune", {
+              value: "Circle",
+              color: "Blue",
+            });
             console.log("you clicked on: " + element.getAttribute("value"));
             element.setAttribute("animation", {
               property: "scale",
@@ -192,16 +192,32 @@ radiusOuter: 0.03"
         _scene.appendChild(newBox);
       }
 
-      //Generates random number
+      //Position Checker. If the newly generated position is near to existing elements
+      function positionChecker(newPosition) {
+        positionArr.forEach((el) => {
+          for (let key in el) {
+            if (Math.abs(el[key] - newPosition[key]) < 10) {
+              positionRandomizer(position);
+            } else {
+              positionArr.push(newPosition);
+            }
+          }
+        });
+      }
+
+      //Randomizing the position
+      //Creates the random position then calls the position checker function
       function positionRandomizer(_positionObj) {
         _positionObj.x = generateRandomNum(600, true);
         _positionObj.y = generateRandomNum(300, true);
-        _positionObj.z = generateRandomNum(600, true);
+        _positionObj.z = generateRandomNum(10, true);
+        console.log("position is being generated");
+        positionChecker(_positionObj);
       }
 
       //Random element from array
       function arrRandomizer(elArray) {
-        return elArray[generateRandomNum(elArray.length, false)];
+        return elArray[generateRandomNum(elArray.length - 1, false)];
       }
 
       //Helper function to generate random number
