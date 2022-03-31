@@ -61,7 +61,7 @@ radiusOuter: 0.03"
     </a-scene>
 
     <script>
-      const socket = io("https://obscure-retreat-97336.herokuapp.com/");
+      // const socket = io("https://obscure-retreat-97336.herokuapp.com/");
       const scene = document.querySelector("a-scene");
       const camera = document.querySelector("a-camera");
       const deviceWidth = window.innerWidth;
@@ -70,6 +70,7 @@ radiusOuter: 0.03"
       let cameraPos = { x: 0, y: 0, z: 0 };
       //Default Object Position
       const position = { x: 20, y: 10, z: -20 };
+      const positionArr = [];
       //For getting dom elements
       let boxes;
       //Colors
@@ -82,9 +83,9 @@ radiusOuter: 0.03"
       let _interval;
 
       window.onload = () => {
-        socket.on("connect", () => {
-          console.log("Connection Establised");
-        });
+        // socket.on("connect", () => {
+        //   console.log("Connection Establised");
+        // });
         document.addEventListener("touchstart", (e) => {
           const clientX = e.touches[0].clientX;
           const clientY = e.touches[0].clientY;
@@ -103,8 +104,8 @@ radiusOuter: 0.03"
             scale,
             arrRandomizer(shapes)
           );
+          console.log(positionArr);
         }
-
         //This method adds click event for all boxes.
         onSpawn();
       };
@@ -141,10 +142,10 @@ radiusOuter: 0.03"
         boxes.forEach((element) => {
           element.addEventListener("click", (e) => {
             e.preventDefault();
-            socket.emit("check_rune", {
-              value: "Circle",
-              color: "Blue",
-            });
+            // socket.emit("check_rune", {
+            //   value: element.getAttribute("value"),
+            //   color: element.getAttribute("color"),
+            // });
             console.log("you clicked on: " + element.getAttribute("value"));
             element.setAttribute("animation", {
               property: "scale",
@@ -192,27 +193,12 @@ radiusOuter: 0.03"
         _scene.appendChild(newBox);
       }
 
-      //Position Checker. If the newly generated position is near to existing elements
-      function positionChecker(newPosition) {
-        positionArr.forEach((el) => {
-          for (let key in el) {
-            if (Math.abs(el[key] - newPosition[key]) < 10) {
-              positionRandomizer(position);
-            } else {
-              positionArr.push(newPosition);
-            }
-          }
-        });
-      }
-
       //Randomizing the position
       //Creates the random position then calls the position checker function
       function positionRandomizer(_positionObj) {
-        _positionObj.x = generateRandomNum(600, true);
-        _positionObj.y = generateRandomNum(300, true);
-        _positionObj.z = generateRandomNum(10, true);
-        console.log("position is being generated");
-        positionChecker(_positionObj);
+        _positionObj.x = generateRandomNum(1000, true);
+        _positionObj.y = generateRandomNum(600, true);
+        _positionObj.z = generateRandomNum(150, true);
       }
 
       //Random element from array
